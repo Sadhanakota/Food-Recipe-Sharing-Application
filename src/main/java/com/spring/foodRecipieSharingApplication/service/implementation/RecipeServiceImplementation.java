@@ -39,6 +39,8 @@ public class RecipeServiceImplementation  implements RecipeService {
             ingrediants.setIngrediantsName(ingrediantsDto.getIngrediantsName());
             ingrediants.setIngrediantsPrice(ingrediantsDto.getIngrediantsPrice());
             ingrediants.setQuantity(ingrediantsDto.getQuantity());
+            List<Ingrediants> ingrediantsList= new ArrayList<>();
+            recipe.setIngrediants(ingrediantsList);
             Recipe createRecipe = recipeDao.createRecipe(recipe);
             List<Recipe> recipeList=user.getRecipeList();
             recipeList.add(createRecipe);
