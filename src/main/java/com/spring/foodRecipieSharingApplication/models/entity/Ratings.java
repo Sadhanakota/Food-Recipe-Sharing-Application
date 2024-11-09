@@ -1,10 +1,8 @@
 package com.spring.foodRecipieSharingApplication.models.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -16,5 +14,9 @@ public class Ratings {
     private int id;
     private int score;
     private String comment;
+    @ManyToOne
+    @JoinColumn(name="recipe_id")
+    @JsonIgnore
+    private Recipe recipe;
 
 }
