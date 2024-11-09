@@ -16,5 +16,6 @@ public class User {
     private String userName;
     private String userEmail;
     private String userPlace;
-
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
+    private List<Recipe> recipeList;
 }
