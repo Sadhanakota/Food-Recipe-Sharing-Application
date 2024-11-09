@@ -39,6 +39,7 @@ public class RecipeDaoImplementation implements RecipeDao {
 
     @Override
     public String deleteRecipe(Recipe recipe) {
+        recipeRepository.delete(recipe);
         return "Recipe is deleted";
     }
 
