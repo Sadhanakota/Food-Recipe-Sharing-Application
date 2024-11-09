@@ -1,6 +1,8 @@
 package com.spring.foodRecipieSharingApplication.controller;
 
+import com.spring.foodRecipieSharingApplication.models.dto.ResponseStructure;
 import com.spring.foodRecipieSharingApplication.models.dto.UserDto;
+import com.spring.foodRecipieSharingApplication.models.entity.User;
 import com.spring.foodRecipieSharingApplication.service.RecipeService;
 import com.spring.foodRecipieSharingApplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/save")
-    public ResponseEntity<RecipeService> createUser(@RequestBody UserDto userDto)
+    public ResponseEntity<ResponseStructure<User>> createUser(@RequestBody UserDto userDto)
     {
-        return userService.creatUser(userDto);
+        return userService.createUser(userDto);
     }
 
 }

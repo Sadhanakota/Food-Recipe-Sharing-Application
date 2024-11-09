@@ -15,22 +15,24 @@ import org.springframework.stereotype.Service;
 public class UserServiceImplementation implements UserService {
     @Autowired
     private UserDao userDao;
-
-    //Create
-    public ResponseEntity<ResponseStructure<User>> createUser(UserDto userDto)
-    {
+//Create
+    @Override
+    public ResponseEntity<ResponseStructure<User>> createUser(UserDto userDto) {
         User user = new User();
         user.setUserName(userDto.getUserName());
+
+        user.setUserEmail(userDto.getUserEmail());
+        user.setUserPlace(userDto.getUserPlace());
+
         ResponseStructure<User>responseStructure=new ResponseStructure<>();
         responseStructure.setData(userDao.createUser(user));
-        responseStructure.setMessage("OK");
         responseStructure.setStatusCode(HttpStatus.CREATED.value());
+        responseStructure.setMessage("Successfully added user details");
         return new ResponseEntity<>(responseStructure,HttpStatus.CREATED);
+
     }
 
 
-    @Override
-    public ResponseEntity<RecipeService> creatUser(UserDto user) {
-        return null;
-    }
+
+
 }
