@@ -21,7 +21,7 @@ public class RecipeController {
    public ResponseEntity<ResponseStructure<Recipe>> saveRecipe(@RequestBody RecipeDto recipeDto, @RequestBody IngrediantsDto ingrediantsDto, @PathVariable int userId){
        return  recipeService.createRecipe(recipeDto,ingrediantsDto,userId);
     }
-  @GetMapping("/update/{id}")
+  @PutMapping ("/update/{id}")
     public ResponseEntity<ResponseStructure<Recipe>> updateRecipe(@RequestBody RecipeDto recipeDto, @PathVariable int id){
         return recipeService.updateRecipe(recipeDto, id);
 }
