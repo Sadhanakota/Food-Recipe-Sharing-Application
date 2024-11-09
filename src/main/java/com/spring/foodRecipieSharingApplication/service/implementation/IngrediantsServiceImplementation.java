@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.spring.foodRecipieSharingApplication.service.IngrediantService;
 
-import java.security.interfaces.RSAKey;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,7 +72,7 @@ public class IngrediantsServiceImplementation implements IngrediantService {
             }
             Ingrediants updatedIngrediants=ingrediantsDao.updateIngrediant(ingrediants);
             ResponseStructure<Ingrediants> responseStructure=new ResponseStructure<>();
-            responseStructure.setData(ingrediantsDao.createIngrediant(updatedIngrediants));
+            responseStructure.setData(updatedIngrediants);
             responseStructure.setMessage("Ingredient updated Successfully");
             responseStructure.setStatusCode(HttpStatus.OK.value());
             return new ResponseEntity<>(responseStructure,HttpStatus.OK);
@@ -113,7 +113,7 @@ public class IngrediantsServiceImplementation implements IngrediantService {
         else {
 
             ResponseStructure<List<Ingrediants>> responseStructure=new ResponseStructure<>();
-            responseStructure.setData(ingrediantsList);
+            responseStructure.setData(new ArrayList<>());
             responseStructure.setMessage("Ingredients are not Present");
             responseStructure.setStatusCode(HttpStatus.OK.value());
             return new ResponseEntity<>(responseStructure,HttpStatus.OK);
