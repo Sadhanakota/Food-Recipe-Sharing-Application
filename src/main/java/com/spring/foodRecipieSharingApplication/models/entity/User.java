@@ -3,6 +3,8 @@ package com.spring.foodRecipieSharingApplication.models.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name="userinfo")
@@ -14,4 +16,5 @@ public class User {
     private String userName;
     private String userEmail;
     private String userPlace;
+
 }
