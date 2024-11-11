@@ -20,9 +20,9 @@ public class RatingsController {
     private RatingsService ratingsService;
 
 
-    @PostMapping("/create")
-    public ResponseEntity<ResponseStructure<Ratings>> createRatings(@RequestBody RatingsDto ratingsDto) {
-        return ratingsService.createRatings(ratingsDto);
+    @PostMapping("/create/{recipeId}")
+    public ResponseEntity<ResponseStructure<Ratings>> createRatings(@PathVariable int recipeId,@RequestBody RatingsDto ratingsDto) {
+        return ratingsService.createRatings(recipeId,ratingsDto);
 
     }
 
