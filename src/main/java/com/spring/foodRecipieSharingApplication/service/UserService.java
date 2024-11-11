@@ -1,5 +1,6 @@
 package com.spring.foodRecipieSharingApplication.service;
 
+import com.spring.foodRecipieSharingApplication.models.dto.RecipeDto;
 import com.spring.foodRecipieSharingApplication.models.dto.ResponseStructure;
 import com.spring.foodRecipieSharingApplication.models.dto.UserDto;
 import com.spring.foodRecipieSharingApplication.models.entity.User;
@@ -22,4 +23,7 @@ public ResponseEntity<ResponseStructure<User>> createUser(UserDto userDto);
 
     //FindAll
     ResponseEntity<ResponseStructure<List<User>>> getAllUsers();
+
+    //AddRecipeToUser
+    ResponseEntity<ResponseStructure<User>> addRecipeToUser(int userId, RecipeDto recipeDto);
 }

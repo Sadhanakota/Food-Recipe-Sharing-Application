@@ -1,5 +1,6 @@
 package com.spring.foodRecipieSharingApplication.controller;
 
+import com.spring.foodRecipieSharingApplication.models.dto.RecipeDto;
 import com.spring.foodRecipieSharingApplication.models.dto.ResponseStructure;
 import com.spring.foodRecipieSharingApplication.models.dto.UserDto;
 import com.spring.foodRecipieSharingApplication.models.entity.User;
@@ -52,5 +53,12 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    // Add a recipe to a user
+    @PostMapping("/addRecipe/{userId}")
+    public ResponseEntity<ResponseStructure<User>> addRecipeToUser(
+            @PathVariable int userId,
+            @RequestBody RecipeDto recipeDto) {
+        return userService.addRecipeToUser(userId, recipeDto);
+    }
 
 }

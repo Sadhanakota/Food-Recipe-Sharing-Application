@@ -1,10 +1,14 @@
 package com.spring.foodRecipieSharingApplication.service.implementation;
 
+import com.spring.foodRecipieSharingApplication.dao.RecipeDao;
 import com.spring.foodRecipieSharingApplication.dao.UserDao;
 import com.spring.foodRecipieSharingApplication.exception.DataNotFoundException;
+import com.spring.foodRecipieSharingApplication.models.dto.RecipeDto;
 import com.spring.foodRecipieSharingApplication.models.dto.ResponseStructure;
 import com.spring.foodRecipieSharingApplication.models.dto.UserDto;
+import com.spring.foodRecipieSharingApplication.models.entity.Recipe;
 import com.spring.foodRecipieSharingApplication.models.entity.User;
+import com.spring.foodRecipieSharingApplication.service.RecipeService;
 import com.spring.foodRecipieSharingApplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +22,10 @@ import java.util.List;
 public class UserServiceImplementation implements UserService {
     @Autowired
     private UserDao userDao;
-//Create
+    @Autowired
+    private RecipeDao recipeDao;
+
+    //Create
     @Override
     public ResponseEntity<ResponseStructure<User>> createUser(UserDto userDto) {
         User user = new User();
@@ -26,11 +33,11 @@ public class UserServiceImplementation implements UserService {
         user.setUserEmail(userDto.getUserEmail());
         user.setUserPlace(userDto.getUserPlace());
 
-        ResponseStructure<User>responseStructure=new ResponseStructure<>();
+        ResponseStructure<User> responseStructure = new ResponseStructure<>();
         responseStructure.setData(userDao.createUser(user));
         responseStructure.setStatusCode(HttpStatus.CREATED.value());
         responseStructure.setMessage("Successfully added user details");
-        return new ResponseEntity<>(responseStructure,HttpStatus.CREATED);
+        return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
 
     }
 
@@ -45,15 +52,15 @@ public class UserServiceImplementation implements UserService {
             responseStructure.setMessage("User found successfully");
             responseStructure.setStatusCode(HttpStatus.FOUND.value());
             return new ResponseEntity<>(responseStructure, HttpStatus.OK);
-        }
-        else {
+        } else {
             throw new DataNotFoundException("User not found");
         }
 
     }
-//Update
+
+    //Update
     @Override
-    public ResponseEntity<ResponseStructure<User>> updateUser(int id,UserDto userDto) {
+    public ResponseEntity<ResponseStructure<User>> updateUser(int id, UserDto userDto) {
         ResponseStructure<User> responseStructure = new ResponseStructure<User>();
         User existingUser = userDao.findUserById(id);
         if (existingUser != null) {
@@ -80,6 +87,7 @@ public class UserServiceImplementation implements UserService {
             throw new DataNotFoundException("User not found");
         }
     }
+
     //Delete
     @Override
     public ResponseEntity<ResponseStructure<String>> deleteUser(int id) {
@@ -87,7 +95,7 @@ public class UserServiceImplementation implements UserService {
         User existingUser = userDao.findUserById(id);
 
         if (existingUser != null) {
-        String deleteUser = userDao.deleteUser(existingUser);
+            String deleteUser = userDao.deleteUser(existingUser);
 
             responseStructure.setData(deleteUser);
             responseStructure.setMessage("Deleted successfully");
@@ -118,11 +126,43 @@ public class UserServiceImplementation implements UserService {
         }
     }
 
+    @Override
+    public ResponseEntity<ResponseStructure<User>> addRecipeToUser(int userId, RecipeDto recipeDto) {
+        User user = userDao.findUserById(userId);
+        if (user == null) {
+            throw new DataNotFoundException("User not found");
+        } else {
+            Recipe recipe = new Recipe();
+            recipe.setTitle(recipeDto.getTitle());
+            recipe.setDescription(recipeDto.getDescription());
+            recipe.setCreateDate(recipeDto.getCreateDate());
+            recipe.setUser(user);
+            Recipe savedRecipe =recipeDao.createRecipe(recipe);
+            List<Recipe> recipeList = user.getRecipeList();
+            if (recipeList != null) {
+                recipeList.add(savedRecipe);
+                user.setRecipeList(recipeList);
+                User updatedUser = userDao.updateUser(user);
 
+                ResponseStructure<User> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(updatedUser);
+                responseStructure.setMessage("Recipe added to user successfully");
+                responseStructure.setStatusCode(HttpStatus.OK.value());
 
+                return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+            } else {
+                recipeList=new ArrayList<>();
+                recipeList.add(savedRecipe);
+                user.setRecipeList(recipeList);
+                User updatedUser = userDao.updateUser(user);
 
+                ResponseStructure<User> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(updatedUser);
+                responseStructure.setMessage("Recipe added to user successfully");
+                responseStructure.setStatusCode(HttpStatus.OK.value());
 
-
-
-
+                return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+            }
+        }
+    }
 }
