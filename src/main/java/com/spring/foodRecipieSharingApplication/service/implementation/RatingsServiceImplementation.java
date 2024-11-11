@@ -1,10 +1,12 @@
 package com.spring.foodRecipieSharingApplication.service.implementation;
 
 import com.spring.foodRecipieSharingApplication.dao.RatingsDao;
+import com.spring.foodRecipieSharingApplication.dao.RecipeDao;
 import com.spring.foodRecipieSharingApplication.exception.DataNotFoundException;
 import com.spring.foodRecipieSharingApplication.models.dto.RatingsDto;
 import com.spring.foodRecipieSharingApplication.models.dto.ResponseStructure;
 import com.spring.foodRecipieSharingApplication.models.entity.Ratings;
+import com.spring.foodRecipieSharingApplication.models.entity.Recipe;
 import com.spring.foodRecipieSharingApplication.service.RatingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,20 +22,46 @@ public class RatingsServiceImplementation implements RatingsService{
 
     @Autowired
    private RatingsDao ratingsDao;
+    @Autowired
+    private RecipeDao recipeDao;
     @Override
-    public ResponseEntity<ResponseStructure<Ratings>> createRatings(RatingsDto ratingsDto) {
-        Ratings ratings=new Ratings();
+    public ResponseEntity<ResponseStructure<Ratings>> createRatings(int recipeId,RatingsDto ratingsDto) {
+        Recipe recipe = recipeDao.findRecipeById(recipeId);
+        if (recipe != null) {
 
-        ratings.setScore(ratingsDto.getScore());
-        ratings.setComment(ratingsDto.getComment());
+            Ratings ratings = new Ratings();
 
-        ResponseStructure<Ratings> responseStructure=new ResponseStructure<>();
-        responseStructure.setData(ratingsDao.createRatings(ratings));
-        responseStructure.setMessage("Ratings Created Successfully");
-        responseStructure.setStatusCode(HttpStatus.CREATED.value());
-        return new ResponseEntity<>(responseStructure,HttpStatus.CREATED);
+            ratings.setScore(ratingsDto.getScore());
+            ratings.setComment(ratingsDto.getComment());
+
+            List<Ratings> ratingsList=recipe.getRatings();
+            if(ratingsList!=null) {
+                ratingsList.add(ratings);
+                recipe.setRatings(ratingsList);
+                ratings.setRecipe(recipe);
+                recipeDao.updateRecipe(recipe);
+                ResponseStructure<Ratings> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(ratingsDao.createRatings(ratings));
+                responseStructure.setMessage("Ratings Created Successfully");
+                responseStructure.setStatusCode(HttpStatus.CREATED.value());
+                return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+            }
+            else {
+                ratingsList=new ArrayList<>();
+                ratingsList.add(ratings);
+                recipe.setRatings(ratingsList);
+                ratings.setRecipe(recipe);
+                recipeDao.updateRecipe(recipe);
+                ResponseStructure<Ratings> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(ratingsDao.createRatings(ratings));
+                responseStructure.setMessage("Ratings Created Successfully");
+                responseStructure.setStatusCode(HttpStatus.CREATED.value());
+                return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+            }
+        } else {
+            throw new DataNotFoundException("Recipe is not found to add rating");
+        }
     }
-
     @Override
     public ResponseEntity<ResponseStructure<Ratings>> findRatingsById(int id) {
         Ratings ratings=ratingsDao.findRatingsById(id);

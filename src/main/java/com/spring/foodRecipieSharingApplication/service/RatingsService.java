@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface RatingsService {
 
-    ResponseEntity<ResponseStructure<Ratings>> createRatings(RatingsDto ratingsDto);
+    ResponseEntity<ResponseStructure<Ratings>> createRatings(int recipeId,RatingsDto ratingsDto);
     ResponseEntity<ResponseStructure<Ratings>> findRatingsById(int id);
     ResponseEntity<ResponseStructure<Ratings>> updateRatings(int id,RatingsDto ratingsDto);
     ResponseEntity<ResponseStructure<String>> deleteRatings(int id);
