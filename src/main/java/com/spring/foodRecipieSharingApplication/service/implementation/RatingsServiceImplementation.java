@@ -28,16 +28,36 @@ public class RatingsServiceImplementation implements RatingsService{
     public ResponseEntity<ResponseStructure<Ratings>> createRatings(int recipeId,RatingsDto ratingsDto) {
         Recipe recipe = recipeDao.findRecipeById(recipeId);
         if (recipe != null) {
+
             Ratings ratings = new Ratings();
 
             ratings.setScore(ratingsDto.getScore());
             ratings.setComment(ratingsDto.getComment());
 
-            ResponseStructure<Ratings> responseStructure = new ResponseStructure<>();
-            responseStructure.setData(ratingsDao.createRatings(ratings));
-            responseStructure.setMessage("Ratings Created Successfully");
-            responseStructure.setStatusCode(HttpStatus.CREATED.value());
-            return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+            List<Ratings> ratingsList=recipe.getRatings();
+            if(ratingsList!=null) {
+                ratingsList.add(ratings);
+                recipe.setRatings(ratingsList);
+                ratings.setRecipe(recipe);
+                recipeDao.updateRecipe(recipe);
+                ResponseStructure<Ratings> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(ratingsDao.createRatings(ratings));
+                responseStructure.setMessage("Ratings Created Successfully");
+                responseStructure.setStatusCode(HttpStatus.CREATED.value());
+                return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+            }
+            else {
+                ratingsList=new ArrayList<>();
+                ratingsList.add(ratings);
+                recipe.setRatings(ratingsList);
+                ratings.setRecipe(recipe);
+                recipeDao.updateRecipe(recipe);
+                ResponseStructure<Ratings> responseStructure = new ResponseStructure<>();
+                responseStructure.setData(ratingsDao.createRatings(ratings));
+                responseStructure.setMessage("Ratings Created Successfully");
+                responseStructure.setStatusCode(HttpStatus.CREATED.value());
+                return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+            }
         } else {
             throw new DataNotFoundException("Recipe is not found to add rating");
         }
